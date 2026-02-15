@@ -17,11 +17,6 @@ try {
 }
 
 class UserController {
-    private $pdo;
-    
-    public function __construct($pdo) {
-        $this->pdo = $pdo;
-    }
     
     // VULNERABILITY #1: SQL Injection di login
     public function login() {
@@ -31,7 +26,7 @@ class UserController {
         
         // VULN: Direct string concatenation!
         $sql = "SELECT id, username, role FROM users WHERE username='$username' AND password='$password'";
-        $stmt = $this->pdo->query($sql);
+        $stmt = $pdo->query($sql);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
         
         if ($user) {
@@ -46,7 +41,7 @@ class UserController {
     public function getUser($id) {
         // VULN: No sanitization on $id parameter!
         $sql = "SELECT * FROM users WHERE id = $id";
-        $stmt = $this->pdo->query($sql);
+        $stmt = $pdo->query($sql);
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         echo json_encode(['users' => $users]);
@@ -59,7 +54,7 @@ class UserController {
         
         // VULN: Search term directly injected!
         $sql = "SELECT * FROM users WHERE username LIKE '%$search%' OR email LIKE '%$search%'";
-        $stmt = $this->pdo->query($sql);
+        $stmt = $pdo->query($sql);
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         echo json_encode(['results' => $users]);
@@ -68,7 +63,7 @@ class UserController {
     // VULNERABILITY #4: Time-based Blind SQLi
     public function profile($user_id) {
         $sql = "SELECT * FROM users WHERE id = $user_id AND (SELECT COUNT(*) FROM orders WHERE user_id = users.id) > 0";
-        $stmt = $this->pdo->query($sql);
+        $stmt = $pdo->query($sql);
         $profile = $stmt->fetch(PDO::FETCH_ASSOC);
         
         echo json_encode($profile ?: ['error' => 'Profile not found']);
@@ -78,7 +73,7 @@ class UserController {
 // Router sederhana
 $method = $_SERVER['REQUEST_METHOD'];
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$controller = new UserController($pdo);
+$controller = new UserController();
 
 switch ($path) {
     case '/api/login':
