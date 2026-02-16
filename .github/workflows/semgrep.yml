@@ -1,4 +1,4 @@
-name: Semgrep SAST Scan
+name: Semgrep
 
 on:
   push:
@@ -21,5 +21,4 @@ jobs:
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
         with:
-          entryPoint: semgrep ci
-          args: "--severity ERROR"
+          config: auto
