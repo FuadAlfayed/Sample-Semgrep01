@@ -1,17 +1,27 @@
-name: Semgrep
+name: Semgrep SAST Scan
 
 on:
   push:
+    branches:
+      - main
   pull_request:
 
 jobs:
   semgrep:
     runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v4
+    permissions:
+      contents: read
 
-      - name: Run Semgrep
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep Scan
         uses: semgrep/semgrep-action@v1
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+        with:
+          config: auto
+          generateSarif: true
+          failOn: high
