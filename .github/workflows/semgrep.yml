@@ -17,11 +17,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run Semgrep Scan
+      - name: Run Semgrep
         uses: semgrep/semgrep-action@v1
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
         with:
           config: auto
-          generateSarif: true
-          failOn: high
+          args: >
+            --severity ERROR
