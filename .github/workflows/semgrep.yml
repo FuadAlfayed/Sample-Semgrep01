@@ -2,16 +2,12 @@ name: Semgrep
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
   pull_request:
 
 jobs:
   semgrep:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -20,5 +16,3 @@ jobs:
         uses: semgrep/semgrep-action@v1
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
-        with:
-          config: auto
