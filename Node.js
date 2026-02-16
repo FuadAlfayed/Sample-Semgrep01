@@ -26,9 +26,10 @@ app.delete('/api/products/:id', async (req, res) => {
 // A03:2021 - NoSQL Injection (CVE-2023-45147 similar)
 app.get('/api/products/search', async (req, res) => {
     const { q } = req.query;
-    // VULN: Direct $where injection!
+    // FIXED: Use regex with proper escaping instead of $where
+    const escapedQuery = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const products = await client.db('ecommerce').collection('products')
-        .find({ $where: `this.name.toLowerCase().includes('${q.toLowerCase()}')` })
+        .find({ name: { $regex: escapedQuery, $options: 'i' } })
         .toArray();
     res.json(products);
 });
