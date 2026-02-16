@@ -14,8 +14,7 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Run Semgrep
         uses: semgrep/semgrep-action@v1
@@ -23,5 +22,4 @@ jobs:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
         with:
           config: auto
-          args: >
-            --severity ERROR
+          args: "--severity ERROR"
